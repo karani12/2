@@ -1,26 +1,63 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <app-header @open-login-modal="isLoginOpen=true" />
+  <router-view>
+
+  </router-view>
+  <loginModal v-if="isLoginOpen" @close-login=" isLoginOpen = false" />
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import loginModal from '@/components/loginModal'
+import AppHeader from '@/components/AppHeader'
+import firebase from '@/utilities/firebase'
+
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+        data() {
+        return {
+          isLoginOpen:true,
+          isSignedIn:false,
+          authUser:""
+
+        }
+      },
+      mounted() {
+        firebase.auth().onAuthStateChanged((user)=> {
+          if (user) {
+            this.isSignedIn = true;
+            this.authUser= user;
+            
+   
+          } else { 
+            this.isSignedIn = false;
+            this.authUser={}
+
+            
+   
+       }
+});
+      },
+  components: { AppHeader, loginModal},
+
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+#app{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
 </style>
+
+
+
